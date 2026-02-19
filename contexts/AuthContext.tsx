@@ -9,6 +9,9 @@ interface AuthContextType {
   session: Session | null
   loading: boolean
   signInWithGoogle: () => Promise<void>
+  signInWithFacebook: () => Promise<void>
+  signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>
+  signUpWithEmail: (email: string, password: string) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
 }
 
@@ -49,25 +52,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [router, supabase.auth]) // supabase.auth ahora es estable
 
   const signInWithGoogle = async (): Promise<void> => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        }
-      })
-      if (error) {
-        console.error('Error signing in with Google:', error)
-        throw error
-      }
-    } catch (error) {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: { access_type: 'offline', prompt: 'consent' },
+      },
+    })
+    if (error) {
       console.error('Error signing in with Google:', error)
       throw error
     }
+  }
+
+  const signInWithFacebook = async (): Promise<void> => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+    if (error) {
+      console.error('Error signing in with Facebook:', error)
+      throw error
+    }
+  }
+
+  const signInWithEmail = async (
+    email: string,
+    password: string
+  ): Promise<{ error: string | null }> => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      return { error: error.message }
+    }
+    return { error: null }
+  }
+
+  const signUpWithEmail = async (
+    email: string,
+    password: string
+  ): Promise<{ error: string | null }> => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+    if (error) {
+      return { error: error.message }
+    }
+    return { error: null }
   }
 
   const signOut = async (): Promise<void> => {
@@ -90,6 +126,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       session,
       loading,
       signInWithGoogle,
+      signInWithFacebook,
+      signInWithEmail,
+      signUpWithEmail,
       signOut
     }}>
       {children}

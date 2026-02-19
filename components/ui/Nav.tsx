@@ -16,7 +16,7 @@ const Nav = () => {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            Arrechoteca
+                            La Caleta del Verbo
                         </h1>
                         <span className="ml-2 text-sm text-gray-500 font-medium">🇪🇨</span>
                     </div>

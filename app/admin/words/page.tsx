@@ -5,55 +5,44 @@ import InsultsAdmin from "@/components/features/InsultsAdmin";
 import WordsAdmin from "@/components/features/WordsAdmin";
 import RespectAdmin from "@/components/features/RespectAdmin";
 
-const Admin = () => {
+const tabs = [
+  { id: "words" as const, label: "Palabras" },
+  { id: "insults" as const, label: "Puteadas" },
+  { id: "respect" as const, label: "Guayaco que se Respeta" },
+];
+
+export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<"words" | "insults" | "respect">("words");
 
   return (
-    // <div className="p-5">
-    <div className="w-full lg:w-[1000] m-5">
-    
-      {/* Navigation Tabs */}
-      <div className="flex border-b border-gray-200 mb-4 justify-center md:justify-start">
-        <button
-          className={`px-4 py-2 font-medium transition-colors ${
-            activeTab === "words"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-          onClick={() => setActiveTab("words")}
-        >
-          Palabras
-        </button>
-        <button
-          className={`px-4 py-2 font-medium transition-colors ${
-            activeTab === "insults"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-          onClick={() => setActiveTab("insults")}
-        >
-          Puteadas
-        </button>
-        <button
-          className={`px-4 py-2 font-medium transition-colors ${
-            activeTab === "respect"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-          onClick={() => setActiveTab("respect")}
-        >
-          Guayaco que se Respeta
-        </button>
+    <div className="w-full">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">Panel de administración</h1>
+        <p className="text-muted-foreground text-sm mt-1">Gestiona palabras, puteadas y contenido.</p>
       </div>
 
-      {/* Content */}
-      <div className="p-3 rounded-md bg-white">
+      <div className="flex gap-1 p-1 rounded-lg border border-border bg-muted/30 mb-6">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 md:flex-none px-4 py-2.5 rounded-md text-sm font-medium transition-colors ${
+              activeTab === tab.id
+                ? "bg-card text-foreground shadow-soft"
+                : "text-muted-foreground hover:text-foreground hover:bg-card/50"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="rounded-xl border border-border bg-card shadow-soft p-4 md:p-6">
         {activeTab === "words" && <WordsAdmin />}
         {activeTab === "insults" && <InsultsAdmin />}
         {activeTab === "respect" && <RespectAdmin />}
       </div>
     </div>
   );
-};
-
-export default Admin;
+}

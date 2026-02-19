@@ -13,7 +13,7 @@ const Nav = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     
-    const { user, loading, signInWithGoogle, signOut } = useAuth();
+    const { user, loading, signOut } = useAuth();
     
     // Verificar si el usuario actual es admin
     const isAdmin = user ? admmin_email.includes(user.email) : false;
@@ -25,14 +25,6 @@ const Nav = () => {
         { name: 'Guayaco que se respeta', href: '/guayaco' }
     ];
 
-    const handleSignIn = async () => {
-        try {
-            await signInWithGoogle();
-        } catch (error) {
-            console.error('Error al iniciar sesión:', error);
-        }
-    };
-
     const handleSignOut = async () => {
         try {
             await signOut();
@@ -42,83 +34,70 @@ const Nav = () => {
         }
     };
 
-    const handleAdminClick = () => {
-        // Por ahora no hace nada, pero aquí puedes agregar la lógica admin
-        console.log('Acceso admin clickeado');
-        setUserMenuOpen(false);
-    };
-
     // Componente de botón de login/user
     const AuthButton = () => {
         if (loading) {
-            return (
-                <div className="w-10 h-10 bg-white/20 rounded-full animate-pulse"></div>
-            );
+            return <div className="h-9 w-24 rounded-lg bg-muted animate-pulse" />;
         }
 
         if (user) {
             return (
                 <div className="relative">
                     <button
+                        type="button"
                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                        className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-3 rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors"
                     >
                         {user.user_metadata?.avatar_url ? (
-                            <img 
-                                src={user.user_metadata?.avatar_url} 
-                                alt="Avatar" 
-                                className="w-6 h-6 rounded-full"
-                            />
+                            <img src={user.user_metadata.avatar_url} alt="" className="w-7 h-7 rounded-full" />
                         ) : (
-                            <User className="w-5 h-5 text-white" />
+                            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                <User className="w-4 h-4" />
+                            </span>
                         )}
-                        <span className="text-white text-sm font-medium hidden md:block">
+                        <span className="text-sm font-medium text-foreground hidden md:block max-w-[120px] truncate">
                             {user.user_metadata?.full_name || user.email}
                         </span>
-                        <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
                     </button>
 
-                    {/* Dropdown menu */}
                     {userMenuOpen && (
-                        <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
-                            <div className="px-4 py-3 border-b border-gray-100">
-                                <p className="text-sm font-medium text-gray-900">
+                        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-border bg-card py-2 z-50">
+                            <div className="px-4 py-3 border-b border-border">
+                                <p className="text-sm font-medium text-foreground truncate">
                                     {user.user_metadata?.full_name || 'Usuario'}
                                 </p>
-                                <p className="text-xs text-gray-500 truncate">
+                                <p className="text-xs text-muted-foreground truncate flex items-center gap-1.5">
                                     {user.email}
                                     {isAdmin && (
-                                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-destructive/10 text-destructive">
                                             Admin
                                         </span>
                                     )}
                                 </p>
                             </div>
-                            
-                            {/* Opción Admin - Solo visible para admin */}
                             {isAdmin && (
                                 <Link
-                                    // onClick={handleAdminClick}
-                                    href="/admin/words" 
-                                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                    href="/admin/words"
+                                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                                    onClick={() => setUserMenuOpen(false)}
                                 >
-                                    <Shield className="w-4 h-4" />
+                                    <Shield className="w-4 h-4 text-primary" />
                                     Administrador
                                 </Link>
                             )}
-                            
-                            <Link 
-                                href="/perfil" 
-                                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                            <Link
+                                href="/perfil"
+                                className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                                 onClick={() => setUserMenuOpen(false)}
                             >
                                 <User className="w-4 h-4" />
                                 Mi Perfil
                             </Link>
-                            
                             <button
+                                type="button"
                                 onClick={handleSignOut}
-                                className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-destructive hover:bg-destructive/5 transition-colors text-left"
                             >
                                 <LogOut className="w-4 h-4" />
                                 Cerrar Sesión
@@ -130,46 +109,39 @@ const Nav = () => {
         }
 
         return (
-            <button 
-                onClick={handleSignIn}
-                className="group relative overflow-hidden bg-gradient-to-r from-amber-400 to-orange-500 px-6 py-3 rounded-full font-semibold text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            <Link
+                href="/auth/login"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
             >
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    <span>Iniciar Sesión</span>
-                </div>
-            </button>
+                <User className="w-4 h-4" />
+                <span>Iniciar sesión</span>
+            </Link>
         );
     };
 
     return (
-        <nav className="bg-gradient-to-r from-sky-400 via-sky-500 to-cyan-500 sticky top-0 z-50 shadow-lg backdrop-blur-sm">
-            <div className="mx-auto px-4 max-w-[1200px]">
-                <div className="flex justify-between items-center py-4">
-                    {/* Logo mejorado */}
-                    <a href="/" className="flex items-center hover:scale-105 transition-transform duration-300 cursor-pointer">
-                        <div className="relative">
-                            <h1 className="text-2xl md:text-4xl font-black text-white drop-shadow-lg">
-                                Arrechoteca
-                            </h1>
-                            <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-amber-300 to-orange-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-                        </div>
-                        <div className="ml-2 w-2 h-2 bg-amber-300 rounded-full animate-pulse"></div>
-                    </a>
-                    
-                    {/* Desktop Navigation mejorada */}
-                    <div className="hidden lg:flex items-center gap-3">
+        <nav className="sticky top-0 z-50 border-b border-border bg-card">
+            <div className="mx-auto px-4 max-w-4xl">
+                <div className="flex justify-between items-center h-16">
+                    <Link
+                        href="/"
+                        className="font-semibold text-lg text-foreground hover:text-primary transition-colors"
+                        onClick={() => setActiveItem('Inicio')}
+                    >
+                        La Caleta del Verbo
+                    </Link>
+
+                    <div className="hidden lg:flex items-center gap-1">
                         {navItems.map((item) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
                                 onClick={() => setActiveItem(item.name)}
                                 className={`
-                                    relative px-6 py-3 text-sm font-semibold transition-all duration-300 rounded-full
+                                    px-4 py-2.5 text-sm font-medium rounded-lg transition-colors
                                     ${activeItem === item.name
-                                        ? 'bg-white text-sky-600 shadow-lg scale-105'
-                                        : 'text-white hover:bg-white/20 hover:scale-102'
+                                        ? 'bg-primary/10 text-primary'
+                                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                     }
                                 `}
                             >
@@ -178,136 +150,76 @@ const Nav = () => {
                         ))}
                     </div>
 
-                    {/* Auth Button Desktop */}
-                    <div className="hidden lg:flex items-center gap-3">
+                    <div className="hidden lg:flex items-center gap-2">
                         <AuthButton />
                     </div>
-                    
-                    {/* Mobile menu button mejorado */}
-                    <div className="lg:hidden">
-                        <button
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="relative p-3 rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-all duration-300 border border-white/20 hover:scale-110"
-                            aria-label="Toggle mobile menu"
-                        >
-                            <div className="relative w-6 h-6">
-                                <Menu 
-                                    className={`w-6 h-6 absolute inset-0 transition-all duration-300 ${
-                                        mobileMenuOpen ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'
-                                    }`} 
-                                />
-                                <X 
-                                    className={`w-6 h-6 absolute inset-0 transition-all duration-300 ${
-                                        mobileMenuOpen ? 'rotate-0 opacity-100' : 'rotate-180 opacity-0'
-                                    }`} 
-                                />
-                            </div>
-                        </button>
-                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="lg:hidden p-2.5 rounded-lg text-foreground hover:bg-muted transition-colors"
+                        aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+                    >
+                        <div className="relative w-5 h-5">
+                            <Menu className={`w-5 h-5 absolute inset-0 transition-opacity ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
+                            <X className={`w-5 h-5 absolute inset-0 transition-opacity ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} />
+                        </div>
+                    </button>
                 </div>
                 
-                {/* Mobile Navigation mejorada */}
-                <div className={`lg:hidden overflow-hidden transition-all duration-500 ease-out ${
-                    mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                }`}>
-                    <div className="bg-white/10 backdrop-blur-md rounded-2xl mx-4 mb-4 border border-white/20 shadow-xl">
-                        <div className="p-4 space-y-2">
-                            {navItems.map((item, index) => (
-                                <button
+                <div className={`lg:hidden overflow-hidden transition-all duration-200 ${mobileMenuOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className="py-4 border-t border-border bg-card/50 rounded-b-xl">
+                        <div className="flex flex-col gap-1 px-2">
+                            {navItems.map((item) => (
+                                <Link
                                     key={item.name}
+                                    href={item.href}
                                     onClick={() => {
                                         setActiveItem(item.name);
                                         setMobileMenuOpen(false);
                                     }}
-                                    className={`
-                                        w-full text-left px-4 py-4 rounded-xl font-medium transition-all duration-300 transform
-                                        ${activeItem === item.name
-                                            ? 'bg-white text-sky-600 shadow-lg scale-105'
-                                            : 'text-white hover:bg-white/20 hover:translate-x-2'
-                                        }
-                                    `}
-                                    style={{
-                                        animationDelay: `${index * 100}ms`,
-                                        animation: mobileMenuOpen ? 'slideInFromRight 0.5s ease-out forwards' : 'none'
-                                    }}
+                                    className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                                        activeItem === item.name ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'
+                                    }`}
                                 >
-                                    <div className="flex items-center justify-between">
-                                        {item.name}
-                                        {activeItem === item.name && (
-                                            <div className="w-2 h-2 bg-sky-600 rounded-full"></div>
-                                        )}
-                                    </div>
-                                </button>
+                                    {item.name}
+                                </Link>
                             ))}
-                            
-                            {/* Separador elegante */}
-                            <div className="flex items-center justify-center py-4">
-                                <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent w-full"></div>
-                            </div>
-                            
-                            {/* Auth Button Mobile */}
+                            <div className="my-2 h-px bg-border" />
                             {user ? (
-                                <div className="space-y-2">
-                                    <div className="text-xs text-white/80 px-4 flex items-center gap-2">
-                                        Hola, {user.user_metadata?.full_name || user.email}
-                                        {isAdmin && (
-                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                Admin
-                                            </span>
-                                        )}
-                                    </div>
-                                    
-                                    {/* Opción Admin en móvil */}
+                                <>
                                     {isAdmin && (
-                                        <button 
-                                            onClick={handleAdminClick}
-                                            className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                                        <Link
+                                            href="/admin/words"
+                                            className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-foreground hover:bg-muted"
+                                            onClick={() => setMobileMenuOpen(false)}
                                         >
-                                            <div className="flex items-center justify-center gap-2">
-                                                <Shield className="w-5 h-5" />
-                                                <span>Panel Admin</span>
-                                            </div>
-                                        </button>
+                                            <Shield className="w-4 h-4 text-primary" />
+                                            Administrador
+                                        </Link>
                                     )}
-                                    
-                                    <button 
+                                    <button
+                                        type="button"
                                         onClick={handleSignOut}
-                                        className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                                        className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-destructive hover:bg-destructive/5 w-full text-left"
                                     >
-                                        <div className="flex items-center justify-center gap-2">
-                                            <LogOut className="w-5 h-5" />
-                                            <span>Cerrar Sesión</span>
-                                        </div>
+                                        <LogOut className="w-4 h-4" />
+                                        Cerrar Sesión
                                     </button>
-                                </div>
+                                </>
                             ) : (
-                                <button 
-                                    onClick={handleSignIn}
-                                    className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white px-4 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                                <Link
+                                    href="/auth/login"
+                                    className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium bg-primary text-primary-foreground"
                                 >
-                                    <div className="flex items-center justify-center gap-2">
-                                        <User className="w-5 h-5" />
-                                        <span>Iniciar Sesión</span>
-                                    </div>
-                                </button>
+                                    <User className="w-4 h-4" />
+                                    Iniciar sesión
+                                </Link>
                             )}
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <style jsx>{`
-                @keyframes slideInFromRight {
-                    from {
-                        opacity: 0;
-                        transform: translateX(100%);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
-                }
-            `}</style>
         </nav>
     );
 };

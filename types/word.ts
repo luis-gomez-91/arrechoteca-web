@@ -30,3 +30,11 @@ export interface WordExample {
 export interface NewWordExmple {
     text: string;
 }
+
+/** Respuesta paginada del backend GET /words/ */
+export interface WordPaginated {
+  items: Word[];
+  total: number;
+  skip: number;
+  limit: number;
+}

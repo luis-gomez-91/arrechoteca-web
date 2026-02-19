@@ -20,7 +20,7 @@ export const createClient = () => {
       persistSession: true,
       detectSessionInUrl: true,
       // Agregar una clave de storage única para tu aplicación
-      storageKey: 'arrechoteca-admin2-auth'
+      storageKey: 'la-caleta-del-verbo-auth'
     }
   })
 

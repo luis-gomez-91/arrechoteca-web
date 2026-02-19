@@ -128,14 +128,14 @@ const Words: React.FC = () => {
                     console.log('Fetching data from:', API_BASE_URL);
                     
                     const [wordsResult, categoriesResult] = await Promise.all([
-                        apiRequest('/words/'),
+                        apiRequest('/words/?skip=0&limit=100'),
                         apiRequest('/categories/').catch(err => {
                             console.warn('Categories fetch failed:', err);
                             return [];
                         })
                     ]);
-                    
-                    setWords(wordsResult || []);
+                    const items = wordsResult?.items ?? wordsResult ?? [];
+                    setWords(Array.isArray(items) ? items : []);
                     setCategories(categoriesResult || []);
                 }
                 

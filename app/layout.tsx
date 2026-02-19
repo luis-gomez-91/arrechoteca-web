@@ -20,33 +20,33 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Arrechoteca - Jerga Guayaca",
-    template: "%s | Arrechoteca"
+    default: "La Caleta del Verbo - Jerga Guayaca",
+    template: "%s | La Caleta del Verbo"
   },
   description: "Diccionario completo de la jerga guayaca ecuatoriana. Descubre palabras, insultos y expresiones típicas de Guayaquil.",
   keywords: ["jerga guayaca", "diccionario", "guayaquil", "ecuador", "palabras", "expresiones"],
-  authors: [{ name: "Arrechoteca Team" }],
-  creator: "Arrechoteca",
-  publisher: "Arrechoteca",
+  authors: [{ name: "La Caleta del Verbo Team" }],
+  creator: "La Caleta del Verbo",
+  publisher: "La Caleta del Verbo",
   openGraph: {
     type: "website",
     locale: "es_EC",
-    url: "https://arrechoteca.com",
-    siteName: "Arrechoteca",
-    title: "Arrechoteca - Jerga Guayaca",
+    url: "https://lacaletadelverbo.com",
+    siteName: "La Caleta del Verbo",
+    title: "La Caleta del Verbo - Jerga Guayaca",
     description: "Diccionario completo de la jerga guayaca ecuatoriana",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Arrechoteca - Jerga Guayaca",
+        alt: "La Caleta del Verbo - Jerga Guayaca",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Arrechoteca - Jerga Guayaca",
+    title: "La Caleta del Verbo - Jerga Guayaca",
     description: "Diccionario completo de la jerga guayaca ecuatoriana",
     images: ["/og-image.png"],
   },
@@ -70,21 +70,20 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`
-        ${roboto.variable} 
-        ${inter.variable} 
-        font-sans antialiased 
-        text-gray-900 dark:text-gray-50 
-        selection:bg-blue-200 selection:text-blue-900
+        ${roboto.variable}
+        ${inter.variable}
+        font-sans antialiased
+        text-foreground
+        selection:bg-primary/20 selection:text-foreground
         min-h-screen
         flex flex-col
-        bg-slate-100
+        bg-background
       `}>
-        {/* AuthProvider envuelve toda la aplicación */}
         <AuthProvider>
-          <Nav /> 
-          <div className="m-auto h-screen flex-1 flex justify-center w-screen">
+          <Nav />
+          <main className="flex-1 flex flex-col w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 min-h-[calc(100vh-8rem)]">
             {children}
-          </div>
+          </main>
           <Footer />
         </AuthProvider>
       </body>
