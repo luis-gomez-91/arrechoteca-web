@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { BookOpen, MessageCircle, Users, Zap, ArrowRight } from 'lucide-react';
+import AdSlot from '@/components/ads/AdSlot';
 
 export default function Page() {
   return (
@@ -23,6 +24,11 @@ export default function Page() {
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
+      </section>
+
+      {/* Espacio publicitario en la home */}
+      <section className="py-8" aria-label="Publicidad">
+        <AdSlot id="banner-home" variant="banner" />
       </section>
 
       {/* Enlaces */}

@@ -40,6 +40,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { fetchCategories } from "@/lib/data/fetchCategories";
+import { createClient } from "@/lib/supabase";
 
 export default function WordsAdmin () {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -134,10 +135,17 @@ export default function WordsAdmin () {
 
     const handleDelete = async (wordId: number) => {
         try {
+            const { data: { session: freshSession } } = await createClient().auth.getSession();
+            const token = freshSession?.access_token;
+            if (!token) {
+                alert("Sesión expirada. Vuelve a iniciar sesión.");
+                return;
+            }
             const response = await fetch(`${apiUrl}words/${wordId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
 
@@ -177,13 +185,17 @@ export default function WordsAdmin () {
 
         try {
             setIsSubmitting(true);
-
+            const { data: { session: freshSession } } = await createClient().auth.getSession();
+            const token = freshSession?.access_token;
+            if (!token) {
+                alert("Sesión expirada. Vuelve a iniciar sesión.");
+                setIsSubmitting(false);
+                return;
+            }
             const headers: HeadersInit = {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             };
-            if (session?.access_token) {
-                (headers as Record<string, string>)["Authorization"] = `Bearer ${session.access_token}`;
-            }
             const response = await fetch(`${apiUrl}words/`, {
                 method: "POST",
                 headers,
@@ -253,10 +265,19 @@ export default function WordsAdmin () {
 
         try {
             setIsSubmitting(true);
-
+            const { data: { session: freshSession } } = await createClient().auth.getSession();
+            const token = freshSession?.access_token;
+            if (!token) {
+                alert("Sesión expirada. Vuelve a iniciar sesión.");
+                setIsSubmitting(false);
+                return;
+            }
             const response = await fetch(`${apiUrl}words/${editingWordId}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
                 body: JSON.stringify(newWord),
             });
 
@@ -292,41 +313,95 @@ export default function WordsAdmin () {
     };
 
     const handleSubmitExample = async () => {
-        // e.preventDefault();
-        if (!selectedWordId || !newExampleText.trim()) return;
+        if (!newExampleText.trim()) return;
+        if (editingExample) {
+            if (!editingExample.id) return;
+            try {
+                setIsSubmitting(true);
+                const { data: { session: freshSession } } = await createClient().auth.getSession();
+                const token = freshSession?.access_token;
+                if (!token) {
+                    alert("Sesión expirada. Vuelve a iniciar sesión.");
+                    setIsSubmitting(false);
+                    return;
+                }
+                const exampleHeaders: HeadersInit = {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                };
+                const response = await fetch(`${apiUrl}words/examples/${editingExample.id}`, {
+                    method: "PUT",
+                    headers: exampleHeaders,
+                    body: JSON.stringify({ text: newExampleText.trim(), is_active: true }),
+                });
 
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({}));
+                    alert(`❌ Error: ${err.detail || err.message || "No se pudo actualizar el ejemplo"}`);
+                    return;
+                }
+
+                const updatedExample: WordExample = await response.json();
+                setWords(prev =>
+                    prev.map(word =>
+                        word.id === selectedWordId && word.examples
+                            ? {
+                                ...word,
+                                examples: word.examples.map((ex) =>
+                                    ex.id === updatedExample.id ? updatedExample : ex
+                                ),
+                            }
+                            : word
+                    )
+                );
+                alert("✅ Ejemplo actualizado correctamente");
+                setIsExampleModalOpen(false);
+                setNewExampleText('');
+                setEditingExample(null);
+            } catch (error) {
+                console.error("Error al actualizar el ejemplo:", error);
+                alert("❌ Error de conexión al actualizar el ejemplo");
+            } finally {
+                setIsSubmitting(false);
+            }
+            return;
+        }
+
+        if (!selectedWordId) return;
         try {
             setIsSubmitting(true);
-
+            const { data: { session: freshSession } } = await createClient().auth.getSession();
+            const token = freshSession?.access_token;
+            if (!token) {
+                alert("Sesión expirada. Vuelve a iniciar sesión.");
+                setIsSubmitting(false);
+                return;
+            }
             const exampleHeaders: HeadersInit = {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             };
-            if (session?.access_token) {
-                (exampleHeaders as Record<string, string>)["Authorization"] = `Bearer ${session.access_token}`;
-            }
             const response = await fetch(`${apiUrl}words/${selectedWordId}/examples`, {
                 method: "POST",
                 headers: exampleHeaders,
-                body: JSON.stringify({ text: newExampleText }),
+                body: JSON.stringify({ text: newExampleText.trim() }),
             });
 
             const updatedWord: Word = await response.json();
 
             if (response.ok) {
                 alert("✅ Ejemplo agregado correctamente");
-
                 setWords(prev =>
-                    prev.map(word =>
-                    word.id === updatedWord.id ? updatedWord : word
-                    )
+                    prev.map(word => (word.id === updatedWord.id ? updatedWord : word))
                 );
-
                 setIsExampleModalOpen(false);
                 setNewExampleText('');
+            } else {
+                alert(`❌ Error: ${updatedWord.detail || updatedWord.message || "No se pudo guardar el ejemplo"}`);
             }
-
         } catch (error) {
-            alert("❌ Error de conexión al guardar la palabra");
+            console.error("Error al guardar el ejemplo:", error);
+            alert("❌ Error de conexión al guardar el ejemplo");
         } finally {
             setIsSubmitting(false);
         }
@@ -618,6 +693,7 @@ export default function WordsAdmin () {
                                         onClick={() => {
                                         setIsExampleModalOpen(false);
                                         setNewExampleText('');
+                                        setEditingExample(null);
                                         }}
                                         disabled={isSubmitting}
                                     >

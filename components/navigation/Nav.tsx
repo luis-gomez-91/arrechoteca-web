@@ -3,20 +3,15 @@
 import { useState } from 'react';
 import { Menu, X, User, ChevronDown, LogOut, Shield } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
-
-// Tu email de administrador - agrega esto a tu .env.local
-const admmin_email = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',');
 
 const Nav = () => {
     const [activeItem, setActiveItem] = useState('Inicio');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     
-    const { user, loading, signOut } = useAuth();
-    
-    // Verificar si el usuario actual es admin
-    const isAdmin = user ? admmin_email.includes(user.email) : false;
+    const { user, loading, signOut, isAdmin } = useAuth();
 
     
     const navItems = [
@@ -125,9 +120,16 @@ const Nav = () => {
                 <div className="flex justify-between items-center h-16">
                     <Link
                         href="/"
-                        className="font-semibold text-lg text-foreground hover:text-primary transition-colors"
+                        className="flex items-center gap-2 font-semibold text-lg text-foreground hover:text-primary transition-colors"
                         onClick={() => setActiveItem('Inicio')}
                     >
+                        <Image
+                            src="/logo.webp"
+                            alt="La Caleta del Verbo"
+                            width={36}
+                            height={36}
+                            className="rounded-md object-contain"
+                        />
                         La Caleta del Verbo
                     </Link>
 

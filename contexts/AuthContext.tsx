@@ -4,12 +4,18 @@ import { User, Session } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+  .split(',')
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean)
+
 interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
-  signInWithGoogle: () => Promise<void>
-  signInWithFacebook: () => Promise<void>
+  isAdmin: boolean
+  signInWithGoogle: (redirectTo?: string) => Promise<void>
+  signInWithFacebook: (redirectTo?: string) => Promise<void>
   signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>
   signUpWithEmail: (email: string, password: string) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
@@ -51,11 +57,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription?.unsubscribe()
   }, [router, supabase.auth]) // supabase.auth ahora es estable
 
-  const signInWithGoogle = async (): Promise<void> => {
+  const signInWithGoogle = async (redirectTo?: string): Promise<void> => {
+    const callbackUrl = redirectTo
+      ? `${window.location.origin}/auth/callback?redirect_to=${encodeURIComponent(redirectTo)}`
+      : `${window.location.origin}/auth/callback`
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
         queryParams: { access_type: 'offline', prompt: 'consent' },
       },
     })
@@ -65,11 +74,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const signInWithFacebook = async (): Promise<void> => {
+  const signInWithFacebook = async (redirectTo?: string): Promise<void> => {
+    const callbackUrl = redirectTo
+      ? `${window.location.origin}/auth/callback?redirect_to=${encodeURIComponent(redirectTo)}`
+      : `${window.location.origin}/auth/callback`
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'facebook',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
       },
     })
     if (error) {
@@ -120,11 +132,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const isAdmin = Boolean(
+    user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
+  )
+
   return (
     <AuthContext.Provider value={{
       user,
       session,
       loading,
+      isAdmin,
       signInWithGoogle,
       signInWithFacebook,
       signInWithEmail,

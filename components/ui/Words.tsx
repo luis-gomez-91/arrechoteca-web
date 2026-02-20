@@ -134,21 +134,22 @@ export default function Words() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Búsqueda */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-        <input
-          type="search"
-          placeholder="Buscar palabra o significado..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-shadow"
-          aria-label="Buscar en el diccionario"
-        />
-      </div>
+      {/* Búsqueda + filtros fijos al hacer scroll */}
+      <div className="sticky top-16 z-10 flex flex-col gap-4 pb-4 -mx-1 px-1 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-transparent shadow-[0_1px_0_0_var(--border)]">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <input
+            type="search"
+            placeholder="Buscar palabra o significado..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-shadow"
+            aria-label="Buscar en el diccionario"
+          />
+        </div>
 
-      {/* Filtros + contador */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+        {/* Filtros + contador */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap gap-1.5">
           {TABS.map((tab) => (
             <button
@@ -168,6 +169,7 @@ export default function Words() {
         <span className="text-sm text-muted-foreground">
           {total > 0 && `${filteredWords.length} de ${total}`}
         </span>
+        </div>
       </div>
 
       {/* Lista o estado vacío */}

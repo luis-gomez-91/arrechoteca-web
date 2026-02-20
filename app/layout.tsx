@@ -3,6 +3,7 @@ import { Roboto, Inter } from "next/font/google";
 import "./globals.css";
 import Nav from '@/components/navigation/Nav'
 import Footer from "@/components/navigation/Footer";
+import AdSlot from "@/components/ads/AdSlot";
 import { AuthProvider } from '@/contexts/AuthContext'; // ← Importar AuthProvider
 
 const roboto = Roboto({
@@ -84,6 +85,10 @@ export default function RootLayout({
           <main className="flex-1 flex flex-col w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 min-h-[calc(100vh-8rem)]">
             {children}
           </main>
+          {/* Espacio publicitario: banner arriba del footer (visible en todas las páginas) */}
+          <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-4">
+            <AdSlot id="banner-footer" variant="banner" />
+          </div>
           <Footer />
         </AuthProvider>
       </body>

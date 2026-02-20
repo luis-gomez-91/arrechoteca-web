@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,8 @@ import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect_to') || '/';
   const { user, loading: authLoading, signInWithGoogle, signInWithFacebook, signInWithEmail } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,14 +28,14 @@ export default function LoginPage() {
   }
 
   if (user) {
-    router.replace('/');
+    router.replace(redirectTo);
     return null;
   }
 
   const handleGoogle = async () => {
     setError('');
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(redirectTo);
     } catch {
       setError('No se pudo iniciar sesión con Google.');
     }
@@ -42,7 +44,7 @@ export default function LoginPage() {
   const handleFacebook = async () => {
     setError('');
     try {
-      await signInWithFacebook();
+      await signInWithFacebook(redirectTo);
     } catch {
       setError('No se pudo iniciar sesión con Facebook.');
     }
@@ -62,7 +64,7 @@ export default function LoginPage() {
       setError(err);
       return;
     }
-    router.replace('/');
+    router.replace(redirectTo);
   };
 
   return (
