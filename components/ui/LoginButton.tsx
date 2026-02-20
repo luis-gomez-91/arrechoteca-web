@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image'
 import { useAuth } from '@/contexts/AuthContext'
 import { LogOut, Shield } from 'lucide-react'
 
@@ -37,10 +38,13 @@ const LoginButton: React.FC = () => {
         {/* User Info */}
         <div className="flex items-center gap-2 text-sm text-gray-600">
           {user.user_metadata?.avatar_url && (
-            <img 
-              src={user.user_metadata.avatar_url} 
+            <Image
+              src={user.user_metadata.avatar_url}
               alt="Avatar"
-              className="w-6 h-6 rounded-full"
+              width={24}
+              height={24}
+              className="w-6 h-6 rounded-full object-cover"
+              unoptimized
             />
           )}
           <span className="hidden sm:inline max-w-32 truncate">

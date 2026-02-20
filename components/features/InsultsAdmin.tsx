@@ -95,20 +95,22 @@ export default function InsultsAdmin() {
                 body: JSON.stringify(newBadWord),
             });
 
-            const data: BadWord = await response.json();
+            const data = await response.json();
 
             if (response.ok) {
                 // ✅ Palabra creada correctamente
+                const created = data as BadWord;
                 alert("✅ Puteada agregada correctamente");
 
                 // Agregar la nueva palabra al inicio de la lista
-                setBadWords((prev) => [data, ...prev]);
+                setBadWords((prev) => [created, ...prev]);
 
                 // Cerrar modal y resetear form
                 resetForm();
                 setIsModalOpen(false);
             } else {
-                alert(`❌ Error: ${data.detail || data.message || "No se pudo guardar la palabra"}`);
+                const err = data as { detail?: string; message?: string };
+                alert(`❌ Error: ${err.detail || err.message || "No se pudo guardar la palabra"}`);
             }
         } catch (error) {
             console.error("Error al guardar la palabra:", error);
@@ -147,18 +149,20 @@ export default function InsultsAdmin() {
                 body: JSON.stringify(newBadWord),
             });
 
-            const data: BadWord = await response.json();
+            const data = await response.json();
 
             if (response.ok) {
+                const updated = data as BadWord;
                 alert("✅ Palabra actualizada correctamente");
 
-                setBadWords(prev => prev.map(w => w.id === editingBadWordId ? data : w));
+                setBadWords(prev => prev.map(w => w.id === editingBadWordId ? updated : w));
 
                 resetForm();
                 setIsModalOpen(false);
                 setEditingBadWordId(null);
             } else {
-                alert(`❌ Error: ${data.detail || data.message || "No se pudo actualizar la palabra"}`);
+                const err = data as { detail?: string; message?: string };
+                alert(`❌ Error: ${err.detail || err.message || "No se pudo actualizar la palabra"}`);
             }
         } catch (error) {
             console.error("Error al actualizar la palabra:", error);

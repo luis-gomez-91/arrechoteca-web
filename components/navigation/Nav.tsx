@@ -44,7 +44,14 @@ const Nav = () => {
                         className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors"
                     >
                         {user.user_metadata?.avatar_url ? (
-                            <img src={user.user_metadata.avatar_url} alt="" className="w-7 h-7 rounded-full" />
+                            <Image
+                                src={user.user_metadata.avatar_url}
+                                alt=""
+                                width={28}
+                                height={28}
+                                className="w-7 h-7 rounded-full object-cover"
+                                unoptimized
+                            />
                         ) : (
                             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
                                 <User className="w-4 h-4" />

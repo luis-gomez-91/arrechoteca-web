@@ -5,6 +5,7 @@ import Nav from '@/components/navigation/Nav'
 import Footer from "@/components/navigation/Footer";
 import AdSlot from "@/components/ads/AdSlot";
 import { AuthProvider } from '@/contexts/AuthContext'; // ← Importar AuthProvider
+import { Toaster } from "@/components/ui/sonner";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -90,6 +91,7 @@ export default function RootLayout({
             <AdSlot id="banner-footer" variant="banner" />
           </div>
           <Footer />
+          <Toaster richColors position="top-right" />
         </AuthProvider>
       </body>
     </html>
