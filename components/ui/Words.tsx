@@ -41,7 +41,7 @@ export default function Words() {
   );
 
   const filteredWords = useMemo(() => {
-    let list = [...filteredBySearch];
+    const list = [...filteredBySearch];
     if (activeTab === "az") {
       list.sort((a, b) => (a.word ?? "").localeCompare(b.word ?? ""));
     }
