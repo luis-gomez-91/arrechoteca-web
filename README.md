@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# La Caleta del Verbo
 
-## Getting Started
+Diccionario web de la jerga guayaca ecuatoriana. Descubre palabras, insultos y expresiones típicas de Guayaquil.
 
-First, run the development server:
+## Stack
+
+- **Next.js 15** (App Router) con Turbopack
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS 4**
+- **shadcn/ui** (componentes: Alert, AlertDialog, Button, Dialog, Sonner, etc.)
+- **Supabase** (autenticación)
+- **React Hook Form + Zod** (formularios y validación)
+
+## Requisitos
+
+- Node.js 18+
+- npm, yarn, pnpm o bun
+
+## Instalación
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <url-del-repo>
+cd arrechoteca-web
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Variables de entorno
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Crea un archivo `.env.local` en la raíz con:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Descripción |
+|----------|-------------|
+| `NEXT_PUBLIC_API_URL` | URL base del backend (API de palabras/puteadas) |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clave anónima (pública) de Supabase |
+| `NEXT_PUBLIC_ADMIN_EMAILS` | Emails separados por coma para acceso admin |
 
-## Learn More
+Puedes usar `.env.example` como plantilla (sin valores sensibles).
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Servidor de desarrollo en [http://localhost:3000](http://localhost:3000) |
+| `npm run build` | Build de producción |
+| `npm run start` | Sirve el build de producción |
+| `npm run lint` | Ejecuta ESLint |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estructura del proyecto
 
-## Deploy on Vercel
+```
+app/                 # App Router (páginas y layouts)
+  page.tsx            # Inicio
+  palabras/           # Jerga guayaca
+  puteadas/            # Puteadas
+  guayaco/             # Guayaco que se respeta
+  auth/                # Login, registro, error
+  admin/               # Panel admin (palabras)
+components/           # Componentes React
+  navigation/          # Nav, Footer
+  ui/                  # shadcn (alert, button, dialog, sonner…)
+  features/            # Lógica de negocio (InsultsAdmin, etc.)
+contexts/              # AuthContext (Supabase)
+lib/                   # Utilidades y fetchers
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Licencia
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Proyecto privado.
