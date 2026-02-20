@@ -465,10 +465,13 @@ const Words: React.FC = () => {
                         {filteredWords.map(word => (
                             <div key={word.id} className="relative">
                                 <Card 
-                                    word={word.word} 
-                                    meaning={word.meaning} 
-                                    categorias={word.categories}
-                                    example={word.example}
+                                    word={{
+                                        id: word.id,
+                                        word: word.word,
+                                        meaning: word.meaning,
+                                        categories: word.categories,
+                                        examples: word.example ?? [],
+                                    }}
                                 />
                                 
                                 {/* Action buttons */}
