@@ -199,7 +199,7 @@ const Words: React.FC = () => {
                 
                 alert('Palabra guardada (mock data)');
             } else {
-                let result;
+                let result: Word;
                 if (isAdding) {
                     result = await apiRequest('/words/', {
                         method: 'POST',
