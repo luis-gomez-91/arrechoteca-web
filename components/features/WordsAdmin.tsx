@@ -4,14 +4,6 @@ import { fetchWords } from "@/lib/data/fetchWords";
 import { Category, NewWord, Word, WordExample } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState, useRef, useCallback } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Plus, Search, Pencil, Trash, Loader2, MessageSquare, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -44,7 +36,7 @@ import { createClient } from "@/lib/supabase";
 
 export default function WordsAdmin () {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    const { session } = useAuth();
+    useAuth();
     const [words, setWords] = useState<Word[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -129,10 +121,6 @@ export default function WordsAdmin () {
         word.meaning?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleAdd = () => {
-        console.log('Agregar nueva palabra');
-    };
-
     const handleDelete = async (wordId: number) => {
         try {
             const { data: { session: freshSession } } = await createClient().auth.getSession();
@@ -202,21 +190,20 @@ export default function WordsAdmin () {
                 body: JSON.stringify(newWord),
             });
 
-            const data: Word = await response.json();
+            const data = await response.json();
 
             if (response.ok) {
-                // ✅ Palabra creada correctamente
+                const created = data as Word;
                 alert("✅ Palabra agregada correctamente");
 
-                // Agregar la nueva palabra al inicio de la lista
-                setWords((prev) => [data, ...prev]);
+                setWords((prev) => [created, ...prev]);
                 setTotal((t) => t + 1);
 
-                // Cerrar modal y resetear form
                 resetForm();
                 setIsModalOpen(false);
             } else {
-                alert(`❌ Error: ${data.detail || data.message || "No se pudo guardar la palabra"}`);
+                const err = data as { detail?: string; message?: string };
+                alert(`❌ Error: ${err.detail || err.message || "No se pudo guardar la palabra"}`);
             }
         } catch (error) {
             console.error("Error al guardar la palabra:", error);
@@ -281,18 +268,20 @@ export default function WordsAdmin () {
                 body: JSON.stringify(newWord),
             });
 
-            const data: Word = await response.json();
+            const data = await response.json();
 
             if (response.ok) {
+                const updated = data as Word;
                 alert("✅ Palabra actualizada correctamente");
 
-                setWords(prev => prev.map(w => w.id === editingWordId ? data : w));
+                setWords(prev => prev.map(w => w.id === editingWordId ? updated : w));
 
                 resetForm();
                 setIsModalOpen(false);
                 setEditingWordId(null);
             } else {
-                alert(`❌ Error: ${data.detail || data.message || "No se pudo actualizar la palabra"}`);
+                const err = data as { detail?: string; message?: string };
+                alert(`❌ Error: ${err.detail || err.message || "No se pudo actualizar la palabra"}`);
             }
         } catch (error) {
             console.error("Error al actualizar la palabra:", error);
