@@ -34,7 +34,7 @@ import { Textarea } from "../ui/textarea";
 export default function InsultsAdmin() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
+    const [, setLoading] = useState<boolean>(false);
     const [badWords, setBadWords] = useState<BadWord[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

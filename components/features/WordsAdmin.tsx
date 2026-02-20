@@ -148,8 +148,8 @@ export default function WordsAdmin () {
                 setTotal((t) => Math.max(0, t - 1));
                 
             } else {
-                // Mensaje de error del servidor
-                alert(`❌ Error: ${data.detail || data.message || 'No se pudo eliminar la palabra'}`);
+                const err = data as { detail?: string; message?: string };
+                alert(`❌ Error: ${err.detail || err.message || 'No se pudo eliminar la palabra'}`);
             }
             
         } catch (error) {
@@ -376,9 +376,10 @@ export default function WordsAdmin () {
                 body: JSON.stringify({ text: newExampleText.trim() }),
             });
 
-            const updatedWord: Word = await response.json();
+            const data = await response.json();
 
             if (response.ok) {
+                const updatedWord = data as Word;
                 alert("✅ Ejemplo agregado correctamente");
                 setWords(prev =>
                     prev.map(word => (word.id === updatedWord.id ? updatedWord : word))
@@ -386,7 +387,8 @@ export default function WordsAdmin () {
                 setIsExampleModalOpen(false);
                 setNewExampleText('');
             } else {
-                alert(`❌ Error: ${updatedWord.detail || updatedWord.message || "No se pudo guardar el ejemplo"}`);
+                const err = data as { detail?: string; message?: string };
+                alert(`❌ Error: ${err.detail || err.message || "No se pudo guardar el ejemplo"}`);
             }
         } catch (error) {
             console.error("Error al guardar el ejemplo:", error);
