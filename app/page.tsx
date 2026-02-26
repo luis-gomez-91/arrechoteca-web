@@ -53,7 +53,7 @@ export default function Page() {
               <Zap className="h-5 w-5" />
             </span>
             <span className="font-medium text-foreground">Puteadas</span>
-            <span className="text-sm text-muted-foreground">Ricas puteadas</span>
+            <span className="text-sm text-muted-foreground">Puteadas</span>
           </Link>
           <Link
             href="/guayaco"

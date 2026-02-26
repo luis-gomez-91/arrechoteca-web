@@ -16,7 +16,7 @@ const Nav = () => {
     
     const navItems = [
         { name: 'Jerga Guayaca', href: '/palabras' },
-        { name: 'Ricas puteadas', href: '/puteadas' },
+        { name: 'Puteadas', href: '/puteadas' },
         { name: 'Guayaco que se respeta', href: '/guayaco' }
     ];
 
