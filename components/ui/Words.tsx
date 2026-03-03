@@ -26,6 +26,7 @@ export default function Words() {
   const [activeTab, setActiveTab] = useState<TabId>("todo");
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const autoLoadCountRef = useRef(0);
   const lastSearchRef = useRef("");
@@ -57,15 +58,19 @@ export default function Words() {
   const hasMore = words.length < total;
 
   const loadPage = useCallback(async (skip: number, append: boolean) => {
+    setLoadError(null);
     try {
       if (append) setLoadingMore(true);
       else setLoading(true);
       const data = await fetchWords(skip, PAGE_SIZE);
       setTotal(data.total);
-      setWords((prev) => (append ? [...prev, ...data.items] : data.items));
-    } catch {
+      const items = data.items ?? [];
+      setWords((prev) => (append ? [...prev, ...items] : items));
+    } catch (e) {
       if (!append) setWords([]);
       setTotal(0);
+      const message = e instanceof Error ? e.message : "Error de conexión";
+      setLoadError(message);
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -114,7 +119,7 @@ export default function Words() {
     return () => observer.disconnect();
   }, [hasMore, loadingMore, loading, words.length, loadPage]);
 
-  if (loading) {
+  if (loading && words.length === 0) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-12 w-full rounded-lg" />
@@ -172,8 +177,24 @@ export default function Words() {
         </div>
       </div>
 
+      {/* Error de carga (CORS, API caída, etc.) */}
+      {loadError && (
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-center">
+          <p className="text-sm font-medium text-destructive">No se pudieron cargar las palabras</p>
+          <p className="text-sm text-muted-foreground mt-1">{loadError}</p>
+          <p className="text-xs text-muted-foreground mt-2">Comprueba que la API esté disponible y que CORS permita este origen.</p>
+          <button
+            type="button"
+            onClick={() => loadPage(0, false)}
+            className="mt-3 px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:opacity-90"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+
       {/* Lista o estado vacío */}
-      {filteredWords.length === 0 ? (
+      {!loadError && filteredWords.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border bg-muted/30 py-14 text-center">
           {searchTerm && hasMore && loadingMore ? (
             <p className="text-sm text-muted-foreground">Buscando en más palabras...</p>
@@ -189,7 +210,7 @@ export default function Words() {
             <p className="text-sm text-muted-foreground">Aún no hay palabras.</p>
           )}
         </div>
-      ) : (
+      ) : !loadError ? (
         <>
           <ul className="space-y-6" role="list">
             {filteredWords.map((word) => (
@@ -210,7 +231,7 @@ export default function Words() {
             </p>
           )}
         </>
-      )}
+      ) : null}
     </div>
   );
 }
