@@ -134,7 +134,7 @@ export default function PuteadasList() {
                     {w.examples.map((ex) => (
                       <li key={ex.id} className="flex gap-2">
                         <span className="text-2xl font-serif text-muted-foreground/60 leading-none shrink-0 select-none" aria-hidden>
-                          "
+                          &quot;
                         </span>
                         <p className="text-[15px] text-foreground leading-relaxed pt-0.5">
                           {ex.text}

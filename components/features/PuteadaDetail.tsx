@@ -299,7 +299,7 @@ export default function PuteadaDetail({ insultId }: Props) {
                 <ul className="space-y-2">
                   {insult.examples.map((ex) => (
                     <li key={ex.id} className="flex gap-2">
-                      <span className="text-2xl font-serif text-muted-foreground/60 shrink-0">"</span>
+                      <span className="text-2xl font-serif text-muted-foreground/60 shrink-0">&quot;</span>
                       <p className="text-[15px] text-foreground leading-relaxed">{ex.text}</p>
                     </li>
                   ))}
