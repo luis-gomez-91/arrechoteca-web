@@ -14,22 +14,11 @@ export default function Footer() {
                             Diccionario de la jerga guayaca. Palabras y expresiones de Guayaquil.
                         </p>
                     </div>
-                    <div className="flex flex-wrap gap-6">
-                        <Link href="/palabras" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                            Jerga Guayaca
-                        </Link>
-                        <Link href="/puteadas" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                            Puteadas
-                        </Link>
-                        <Link href="/guayaco" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                            Guayaco que se respeta
-                        </Link>
-                    </div>
                 </div>
                 <div className="mt-10 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
                     <span>© {new Date().getFullYear()} La Caleta del Verbo</span>
                     <span className="text-muted-foreground">
-                        Hecho en Guayaquil
+                        Guayaquil - Ecuador
                     </span>
                 </div>
             </div>

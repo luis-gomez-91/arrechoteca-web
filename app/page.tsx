@@ -6,15 +6,29 @@ import AdSlot from '@/components/ads/AdSlot';
 export default function Page() {
   return (
     <div className="w-full">
-      {/* Hero */}
-      <section className="pt-16 pb-20 md:pt-24 md:pb-28">
-        <div className="w-full">
-          <p className="text-sm font-medium text-primary mb-3">Diccionario de la jerga guayaca</p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight leading-[1.1] mb-5">
+      {/* Hero: background-attachment: fixed — imagen fija al scroll, solo en esta sección */}
+      <section
+        className="relative -mt-6 pt-0 pb-20 md:pb-28"
+        style={{
+          width: '100vw',
+          marginLeft: 'calc(50% - 50vw)',
+          marginRight: 'calc(50% - 50vw)',
+          backgroundImage: 'url("/peñas.webp")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'top center',
+          backgroundAttachment: 'fixed',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/55 z-0" aria-hidden />
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 pt-16 md:pt-24">
+          <div className="max-w-2xl">
+          <p className="text-sm font-medium text-primary-foreground/90 mb-3">Diccionario de la jerga guayaca</p>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.1] mb-5">
             La Caleta del Verbo
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed mb-10">
-            Palabras, expresiones y el sabor costeño de Guayaquil. Significados, ejemplos de uso y la caleta del palabreo que nos define.
+          <p className="text-lg text-white/90 leading-relaxed mb-10">
+            Palabras, expresiones, puteadas y el sabor costeño de Guayaquil y la costa ecuatoriana en general. Significados, ejemplos de uso y la caleta del verbo que nos define.
           </p>
           <Link
             href="/palabras"
@@ -23,9 +37,12 @@ export default function Page() {
             Explorar diccionario
             <ArrowRight className="h-4 w-4" />
           </Link>
+          </div>
         </div>
       </section>
 
+      {/* Resto del contenido */}
+      <div className="relative z-0 bg-background">
       {/* Espacio publicitario en la home */}
       <section className="py-8" aria-label="Publicidad">
         <AdSlot id="banner-home" variant="banner" />
@@ -63,7 +80,7 @@ export default function Page() {
               <Users className="h-5 w-5" />
             </span>
             <span className="font-medium text-foreground">Test Guayaco</span>
-            <span className="text-sm text-muted-foreground">Guayaco que se respeta</span>
+            <span className="text-sm text-muted-foreground">Test Guayaco</span>
           </Link>
           <Link
             href="/palabras"
@@ -77,6 +94,7 @@ export default function Page() {
           </Link>
         </nav>
       </section>
+      </div>
     </div>
   );
 }

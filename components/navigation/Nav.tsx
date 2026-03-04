@@ -17,7 +17,7 @@ const Nav = () => {
     const navItems = [
         { name: 'Jerga Guayaca', href: '/palabras' },
         { name: 'Puteadas', href: '/puteadas' },
-        { name: 'Guayaco que se respeta', href: '/guayaco' }
+        { name: 'Test Guayaco', href: '/guayaco' }
     ];
 
     const handleSignOut = async () => {
@@ -122,7 +122,7 @@ const Nav = () => {
     };
 
     return (
-        <nav className="sticky top-0 z-50 border-b border-border bg-card">
+        <nav className="sticky top-0 z-50 border-b border-border/80 bg-card/80 backdrop-blur-md">
             <div className="mx-auto px-4 max-w-4xl">
                 <div className="flex justify-between items-center h-16">
                     <Link

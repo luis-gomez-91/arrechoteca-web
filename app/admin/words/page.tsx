@@ -8,7 +8,7 @@ import RespectAdmin from "@/components/features/RespectAdmin";
 const tabs = [
   { id: "words" as const, label: "Palabras" },
   { id: "insults" as const, label: "Puteadas" },
-  { id: "respect" as const, label: "Guayaco que se Respeta" },
+  { id: "respect" as const, label: "Test Guayaco" },
 ];
 
 export default function AdminPage() {
